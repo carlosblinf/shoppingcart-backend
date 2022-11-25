@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +22,15 @@ public class Category {
 
     private String description;
 
+    private Long stock;
+
+    private double price;
+
+    private String imageUrl;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Product> products;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }

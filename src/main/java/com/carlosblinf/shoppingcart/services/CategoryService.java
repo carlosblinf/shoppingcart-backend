@@ -1,8 +1,11 @@
 package com.carlosblinf.shoppingcart.services;
 
 import com.carlosblinf.shoppingcart.entities.Category;
+import com.carlosblinf.shoppingcart.exceptions.CustomException;
+import com.carlosblinf.shoppingcart.exceptions.NotFoundException;
 import com.carlosblinf.shoppingcart.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public class CategoryService {
     public Category getCategory(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty())
-            throw new RuntimeException("Category not found");
+            throw new NotFoundException("Category not found");
 
         return category.get();
     }
@@ -29,7 +32,7 @@ public class CategoryService {
     public Category createCategory(Category category) {
         Optional<Category> categoryOptional = categoryRepository.findByName(category.getName());
         if (categoryOptional.isPresent())
-            throw new RuntimeException("Category already exists");
+            throw new CustomException("Category already exists", HttpStatus.CONFLICT);
 
         return categoryRepository.save(category);
     }

@@ -3,6 +3,7 @@ package com.carlosblinf.shoppingcart.services;
 import com.carlosblinf.shoppingcart.dto.ProductDto;
 import com.carlosblinf.shoppingcart.entities.Category;
 import com.carlosblinf.shoppingcart.entities.Product;
+import com.carlosblinf.shoppingcart.exceptions.NotFoundException;
 import com.carlosblinf.shoppingcart.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +32,7 @@ public class ProductService {
     public Product getProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty())
-            throw new RuntimeException("Product not found");
+            throw new NotFoundException("Product not found");
 
         return product.get();
     }

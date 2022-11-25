@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -18,15 +18,15 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private @NotNull String name;
 
-    private String description;
+    private @NotNull String description;
 
-    private Long stock;
+    private @NotNull Long stock;
 
-    private double price;
+    private @NotNull double price;
 
-    private String imageUrl;
+    private @NotNull String imageUrl;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

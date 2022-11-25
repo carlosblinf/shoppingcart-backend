@@ -4,15 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
 
-    private String name;
-    private String description;
-    private Long stock;
-    private double price;
-    private String imageUrl;
-    private Long categoryId;
+    private @NotBlank String name;
+    private @NotBlank String description;
+    private @NotNull Long stock;
+    private @NotNull double price;
+    private @NotBlank String imageUrl;
+    private @NotNull Long categoryId;
 }

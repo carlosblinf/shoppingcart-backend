@@ -33,6 +33,6 @@ public class Order {
     @Column(name = "user_id")
     private Long userId;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 }

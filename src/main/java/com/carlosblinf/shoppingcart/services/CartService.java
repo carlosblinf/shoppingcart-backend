@@ -4,12 +4,9 @@ import com.carlosblinf.shoppingcart.dto.AddCartDto;
 import com.carlosblinf.shoppingcart.dto.CartItemsDto;
 import com.carlosblinf.shoppingcart.entities.Cart;
 import com.carlosblinf.shoppingcart.entities.Product;
-import com.carlosblinf.shoppingcart.exceptions.CustomException;
 import com.carlosblinf.shoppingcart.exceptions.NotFoundException;
-import com.carlosblinf.shoppingcart.mappers.CartMapper;
 import com.carlosblinf.shoppingcart.repositories.CartRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,19 +23,20 @@ public class CartService {
 
     private final ProductService productService;
 
-    private final CartMapper cartMapper;
-
     public CartItemsDto getCartItems(Long user_id) {
         List<Cart> cartList = cartRepository.findAllByUserId(user_id);
         if (cartList.isEmpty())
             return new CartItemsDto(new ArrayList<>(), 0);
 
         List<AddCartDto> cartItems = cartList.stream()
-                .map(cart -> cartMapper.toCartItem(cart)).collect(Collectors.toList());
+                .map(cart -> new AddCartDto(
+                        cart.getQuantity(),cart.getProduct().getId(), cart.getUserId()))
+                .collect(Collectors.toList());
 
-        double subtotal = cartList.stream().reduce(0.0, (suma , item) -> suma + item.getPrice(), Double::sum);
+        double subtotal = cartList.stream()
+                .reduce(0.0, (suma , item) -> suma + item.getPrice() * item.getQuantity(), Double::sum);
 
-        return new CartItemsDto(cartItems, subtotal);
+        return new CartItemsDto(cartList, subtotal);
     }
 
     public Cart addToCart(AddCartDto cartDto) {
@@ -48,7 +46,7 @@ public class CartService {
         if (cartOptional.isEmpty()){
             Product product = productService.getProduct(cartDto.getProductId());
             Cart cart = new Cart(null, product.getPrice(), cartDto.getQuantity(),
-                    cartDto.getUserId(), cartDto.getProductId(), LocalDateTime.now());
+                    cartDto.getUserId(), product, LocalDateTime.now());
 
             return cartRepository.save(cart);
         }
@@ -68,4 +66,11 @@ public class CartService {
 
         return true;
     }
+
+    public boolean clearCart(Long user_id) {
+        cartRepository.deleteByUserId(user_id);
+
+        return true;
+    }
+
 }

@@ -4,6 +4,7 @@ import com.carlosblinf.shoppingcart.dto.ProductDto;
 import com.carlosblinf.shoppingcart.entities.Product;
 import com.carlosblinf.shoppingcart.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,10 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<Product>> getProductList() {
         return new ResponseEntity<>(productService.getProductList(), HttpStatus.OK);
+    }
+    @GetMapping("/page/")
+    public ResponseEntity<Page<Product>> getProductList(@RequestParam(name = "page", defaultValue = "0") int page) {
+        return new ResponseEntity<>(productService.getProductList(page), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -7,6 +7,7 @@ import com.carlosblinf.shoppingcart.exceptions.NotFoundException;
 import com.carlosblinf.shoppingcart.mappers.ProductMapper;
 import com.carlosblinf.shoppingcart.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 10;
 
     private final ProductRepository productRepository;
 
@@ -26,10 +27,11 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public List<Product> getProductList() {
-        List<Product> products = productRepository.findAll();
-//        List<Product> products = (List<Product>) productRepository.findAll(PageRequest.of(page, PAGE_SIZE));
+        return productRepository.findAll();
+    }
 
-        return products;
+    public Page<Product> getProductList(int page) {
+        return productRepository.findAll(PageRequest.of(page, PAGE_SIZE));
     }
 
     public Product getProduct(Long id) {

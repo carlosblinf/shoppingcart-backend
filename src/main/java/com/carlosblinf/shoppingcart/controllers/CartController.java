@@ -19,7 +19,7 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public ResponseEntity<CartItemsDto> getCartItems(@RequestParam Long user_id) {
+    public ResponseEntity<CartItemsDto> getCartItems(@RequestParam(name = "user_id") Long user_id) {
         return ResponseEntity.ok(cartService.getCartItems(user_id));
     }
 
@@ -29,7 +29,13 @@ public class CartController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Boolean> addToCart(@RequestParam Long product_id, @RequestParam Long user_id) {
+    public ResponseEntity<Boolean> deleteCartItem(
+            @RequestParam(name = "product_id") Long product_id, @RequestParam(name = "user_id") Long user_id) {
         return ResponseEntity.ok(cartService.deleteCartItem(product_id, user_id));
+    }
+
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<Boolean> clearCart(@PathVariable(name = "user_id") Long user_id) {
+        return ResponseEntity.ok(cartService.clearCart( user_id));
     }
 }

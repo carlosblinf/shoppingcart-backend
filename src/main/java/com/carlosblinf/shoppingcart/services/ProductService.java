@@ -4,6 +4,7 @@ import com.carlosblinf.shoppingcart.dto.ProductDto;
 import com.carlosblinf.shoppingcart.entities.Category;
 import com.carlosblinf.shoppingcart.entities.Product;
 import com.carlosblinf.shoppingcart.exceptions.NotFoundException;
+import com.carlosblinf.shoppingcart.mappers.ProductMapper;
 import com.carlosblinf.shoppingcart.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,8 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final CategoryService categoryService;
+
+    private final ProductMapper productMapper;
 
     public List<Product> getProductList() {
         List<Product> products = productRepository.findAll();
@@ -40,12 +43,7 @@ public class ProductService {
     public Product createProduct(ProductDto productDto) {
         Category category = categoryService.getCategory(productDto.getCategoryId());
 
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
-        product.setStock(productDto.getStock());
-        product.setImageUrl(productDto.getImageUrl());
+        Product product = productMapper.toProduct(productDto);
         product.setCategory(category);
 
         return productRepository.save(product);
@@ -55,11 +53,7 @@ public class ProductService {
         Product product = getProduct(id);
         Category category = categoryService.getCategory(productDto.getCategoryId());
 
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setPrice(productDto.getPrice());
-        product.setStock(productDto.getStock());
-        product.setImageUrl(productDto.getImageUrl());
+        product = productMapper.toProduct(productDto);
         product.setCategory(category);
 
         return productRepository.save(product);

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,29 +39,29 @@ public class CartService {
     }
 
     public Cart addToCart(AddCartDto cartDto) {
-        Optional<Cart> cartOptional = cartRepository
-                .findByProductIdAndUserId(cartDto.getUserId(), cartDto.getProductId());
+        List<Cart> carts = cartRepository
+                .findByProductIdAndUserId(cartDto.getProductId(), cartDto.getUserId());
 
-        if (cartOptional.isEmpty()){
+        if (carts.isEmpty()){
+            System.out.println("empty");
             Product product = productService.getProduct(cartDto.getProductId());
             Cart cart = new Cart(null, product.getPrice(), cartDto.getQuantity(),
                     cartDto.getUserId(), product, LocalDateTime.now());
 
             return cartRepository.save(cart);
         }
-
-        Cart cart = cartOptional.get();
-        cart.setQuantity(cart.getQuantity() + cartDto.getQuantity());
+        Cart cart = carts.get(0);
+        cart.setQuantity(cartDto.getQuantity());
 
         return cartRepository.save(cart);
     }
 
     public boolean deleteCartItem(Long product_id, Long user_id) {
-        Optional<Cart> cartOptional = cartRepository.findByProductIdAndUserId(product_id,user_id);
-        if(cartOptional.isEmpty())
+        List<Cart> carts = cartRepository.findByProductIdAndUserId(product_id,user_id);
+        if(carts.isEmpty())
             throw new NotFoundException("Not found cart item");
 
-        cartRepository.deleteById(cartOptional.get().getId());
+        cartRepository.deleteById(carts.get(0).getId());
 
         return true;
     }

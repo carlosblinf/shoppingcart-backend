@@ -27,8 +27,8 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getUserOrderList(user_id));
     }
 
-    @PostMapping
-    public ResponseEntity<?> createOrder(@RequestParam("user_id") Long user_id) {
+    @PostMapping("/user/{user_id}")
+    public ResponseEntity<?> createOrder(@PathVariable("user_id") Long user_id) {
         return ResponseEntity.created(URI.create("/api/orders/user/"+user_id)).body(orderService.createOrder(user_id));
     }
 }
